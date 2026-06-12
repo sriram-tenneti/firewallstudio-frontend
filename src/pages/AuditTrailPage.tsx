@@ -63,10 +63,10 @@ export function AuditTrailPage() {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     return (
-      e.document_id.toLowerCase().includes(term) ||
+      (e.document_id || '').toLowerCase().includes(term) ||
       (e.app_distributed_id || '').toLowerCase().includes(term) ||
-      e.user_email.toLowerCase().includes(term) ||
-      e.collection.toLowerCase().includes(term)
+      (e.user_email || '').toLowerCase().includes(term) ||
+      (e.collection || '').toLowerCase().includes(term)
     );
   });
 
@@ -163,9 +163,9 @@ export function AuditTrailPage() {
                     <div className="text-sm font-medium text-gray-900">
                       {entry.collection} / {entry.document_id}
                     </div>
-                    {entry.changed_fields.length > 0 && (
+                    {(entry.changed_fields || []).length > 0 && (
                       <div className="text-xs text-gray-400">
-                        Changed: {entry.changed_fields.join(', ')}
+                        Changed: {(entry.changed_fields || []).join(', ')}
                       </div>
                     )}
                   </div>

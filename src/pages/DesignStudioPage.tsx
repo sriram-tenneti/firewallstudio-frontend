@@ -10,9 +10,7 @@ import { GroupManagerModal } from '@/components/design-studio/GroupManagerModal'
 import { RuleModifyModal } from '@/components/design-studio/RuleModifyModal';
 import type { RuleModification } from '@/components/design-studio/RuleModifyModal';
 import RuleRequestBuilder from '@/components/design-studio/RuleRequestBuilder';
-import RuleRequestsPanel from '@/components/design-studio/RuleRequestsPanel';
 import GroupChangeRequestBuilder from '@/components/design-studio/GroupChangeRequestBuilder';
-import GroupChangeRequestsPanel from '@/components/design-studio/GroupChangeRequestsPanel';
 import { useModal } from '@/hooks/useModal';
 import { useNotification } from '@/hooks/useNotification';
 import type { FirewallRule, Application } from '@/types';
@@ -30,13 +28,7 @@ export function DesignStudioPage() {
   const [selectedEnv, setSelectedEnv] = useState<string>('');
   const [activeTab, setActiveTab] = useState('All');
   const [viewMode, setViewMode] = useState<'table' | 'multi_dc'>('table');
-  const [requestsReloadKey, setRequestsReloadKey] = useState(0);
-  const [highlightRequestId, setHighlightRequestId] = useState<string | null>(null);
-  // Wizard mode: while the user is actively building a new rule request,
-  // the previous-requests listing is hidden so the wizard view stays
-  // focused (no double-context: "I'm creating a rule" vs. "here are old
-  // rules"). Toggled via the "+ New Rule Request" button below.
-  const [isWizardOpen, setIsWizardOpen] = useState(false);
+
 
   const detailModal = useModal<FirewallRule>();
   const modifyModal = useModal<FirewallRule>();
@@ -364,63 +356,26 @@ export function DesignStudioPage() {
 
       {viewMode === 'multi_dc' ? (
         <div className="bg-white border rounded-lg shadow-sm p-4">
-          <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-start justify-between gap-3">
-            <div>
-              <div className="text-sm font-semibold text-rose-800">
-                {isWizardOpen ? 'New Rule · Multi-DC Request' : 'Rule Requests'}
-              </div>
-              <div className="text-xs text-rose-600">
-                {isWizardOpen
-                  ? 'One logical request → deterministic per-DC PhysicalRule fan-out auto-derived from App Management.'
-                  : 'Approved → Deployed → Certified pipeline. Click below to start a new request.'}
-              </div>
+          <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-lg">
+            <div className="text-sm font-semibold text-rose-800">New Rule · Multi-DC Request</div>
+            <div className="text-xs text-rose-600">
+              One logical request → deterministic per-DC PhysicalRule fan-out auto-derived from App Management.
             </div>
-            <button
-              onClick={() => setIsWizardOpen(o => !o)}
-              className={`px-3 py-1.5 text-xs rounded font-medium ${
-                isWizardOpen
-                  ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  : 'bg-rose-600 text-white hover:bg-rose-700'
-              }`}
-            >
-              {isWizardOpen ? 'Cancel · Back to list' : '+ New Rule Request'}
-            </button>
           </div>
-          {isWizardOpen ? (
-            <RuleRequestBuilder
-              applications={applications}
-              onSubmitted={(id) => {
-                loadData();
-                setRequestsReloadKey(k => k + 1);
-                if (id) setHighlightRequestId(id);
-                setIsWizardOpen(false);
-              }}
-            />
-          ) : (
-            <div>
-              <RuleRequestsPanel
-                environment={(selectedEnv as '' | 'Production' | 'Non-Production' | 'Pre-Production')}
-                reloadKey={requestsReloadKey}
-                highlightId={highlightRequestId}
-                onChanged={() => { loadData(); setRequestsReloadKey(k => k + 1); }}
-              />
-            </div>
-          )}
+          <RuleRequestBuilder
+            applications={applications}
+            onSubmitted={() => {
+              loadData();
+            }}
+          />
           <div className="mt-6 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-            <div className="text-sm font-semibold text-purple-800">Group Change Requests</div>
-            <div className="text-xs text-purple-600">Standalone group create / modify / delete. Lifecycle: Pending → Approved → Deployed → Certified. Until Deployed, the group is portal-only and any rule that references it is blocked from being marked Deployed.</div>
+            <div className="text-sm font-semibold text-purple-800">Group Change Request</div>
+            <div className="text-xs text-purple-600">Create / modify / delete groups. Track request status in Request Tracking page.</div>
           </div>
           <div className="mt-3">
             <GroupChangeRequestBuilder
               environment={selectedEnv}
-              onSubmitted={() => setRequestsReloadKey(k => k + 1)}
-            />
-          </div>
-          <div className="mt-3">
-            <GroupChangeRequestsPanel
-              environment={selectedEnv}
-              reloadKey={requestsReloadKey}
-              onChanged={() => { loadData(); setRequestsReloadKey(k => k + 1); }}
+              onSubmitted={() => loadData()}
             />
           </div>
         </div>

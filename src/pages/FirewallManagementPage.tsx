@@ -714,10 +714,9 @@ export default function FirewallManagementPage() {
   const standardCount = envFilteredRules.filter(r => r.is_standard).length;
   const nonStandardCount = envFilteredRules.filter(r => !r.is_standard).length;
 
-  const appOptions = Array.from(new Set(rules.map(r => `${r.app_distributed_id || r.app_id}|${r.app_id}|${r.app_name}`))).map(key => {
-    const [distId] = key.split('|');
-    return { value: distId, label: distId };
-  }).sort((a, b) => a.label.localeCompare(b.label));
+  const appOptions = Array.from(new Set(rules.map(r => r.app_distributed_id || r.app_id))).filter(Boolean).map(distId => ({
+    value: distId, label: distId,
+  })).sort((a, b) => a.label.localeCompare(b.label));
 
   /** Use the same nesting parser for View and Modify so Source/Destination hierarchy is consistent everywhere. */
   const parseExpandedTree = (raw: string, expanded: string): { text: string; indent: number; type: 'group' | 'ip' | 'subnet' | 'range' }[] => {

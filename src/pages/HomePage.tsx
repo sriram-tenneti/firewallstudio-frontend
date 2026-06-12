@@ -170,6 +170,13 @@ export default function HomePage() {
             <div className="text-xs text-slate-500 mt-0.5">Who changed what and when</div>
           </button>
           <button
+            onClick={() => navigate('/pass-through-validation')}
+            className="rounded-xl bg-slate-800/40 border border-slate-700/30 p-3 text-left hover:border-indigo-500/30 transition-colors group"
+          >
+            <div className="text-sm font-medium text-slate-300 group-hover:text-indigo-300">Pass-Through Validation</div>
+            <div className="text-xs text-slate-500 mt-0.5">Live connectivity verification</div>
+          </button>
+          <button
             onClick={() => navigate('/lifecycle')}
             className="rounded-xl bg-slate-800/40 border border-slate-700/30 p-3 text-left hover:border-purple-500/30 transition-colors group"
           >

@@ -13,6 +13,7 @@ import AdminPage from '@/pages/AdminPage';
 import LifecycleDashboardPage from '@/pages/LifecycleDashboardPage';
 import RequestTrackingPage from '@/pages/RequestTrackingPage';
 import AuditTrailPage from '@/pages/AuditTrailPage';
+import PassThroughValidationPage from '@/pages/PassThroughValidationPage';
 
 function App() {
   return (
@@ -78,6 +79,13 @@ function App() {
         <Route path="/request-tracking" element={
           <ModuleLayout module="firewall-studio" title="Request Tracking">
             <RequestTrackingPage />
+          </ModuleLayout>
+        } />
+
+        {/* Pass-Through Validation */}
+        <Route path="/pass-through-validation" element={
+          <ModuleLayout module="firewall-studio" title="Pass-Through Validation">
+            <PassThroughValidationPage />
           </ModuleLayout>
         } />
 
